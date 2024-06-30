@@ -1,14 +1,15 @@
 import React from 'react'
 
-const TextIput = ({ id='', type='', onChange =() => {},value={}, disabled=false, className="", ...props}) => {
+const TextInput = ({ id="", type="", disabled=false, value={}, onChange=()=>{},placeholder='', className="", ...props}) => {
   return (
     <>
     <input 
         disabled={disabled}
-        type={type || "text"}
-        name=''
         value={value}
         onChange={onChange}
+        type={type || "text"}
+        id={id}
+        placeholder={placeholder}
         className='textinput'
         {...props}
     />
@@ -16,4 +17,4 @@ const TextIput = ({ id='', type='', onChange =() => {},value={}, disabled=false,
   )
 }
 
-export default TextIput
+export default TextInput

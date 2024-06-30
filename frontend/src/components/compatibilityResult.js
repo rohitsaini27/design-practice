@@ -3,27 +3,41 @@ import Progress from "./shared/progress";
 import Navbar from "./navbar";
 
 const CompatibilityResult = () => {
+  const formdata = JSON.parse(localStorage.getItem('formdata')) || {}
+
+  function averageValue(){
+    if(formdata.number && formdata.city && formdata.area){
+      let average = (parseInt(formdata.number) + parseInt(formdata.city) + parseInt(formdata.area)) / 3
+      return average.toFixed(2)
+    }
+  }
+
+  function result(){
+    const avg = parseFloat(averageValue())
+    return avg <= 33 ? 'Bad' : avg <= 66 ? 'Average' : 'Good'
+  }
+
   return (
     <div className="compatibility">
-      <span>Bad</span>
+      <span>{result()}</span>
       <div className="score">
-        <p>28%</p>
+        <p>{averageValue()}%</p>
         <pp>SCORE</pp>
       </div>
       <div className="compatibility-progress">
         <Progress
           heading={"Number Capability"}
-          percent={50}
+          percent={formdata.number}
           background="linear-gradient( #FF572E, #FF8132, #FEC139)"
         />
         <Progress
           heading={"Area Capability"}
-          percent={33}
+          percent={formdata.area}
           background="linear-gradient(#8AEB6C, #7FE76A, #03C057)"
         />
         <Progress
           heading={"City Capability"}
-          percent={10}
+          percent={formdata.city}
           background="linear-gradient(#3699EF, #4185E3, #6C35B1)"
         />
       </div>

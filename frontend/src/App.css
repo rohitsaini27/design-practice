@@ -115,13 +115,18 @@
   position: relative;
 }
 
+.form p{
+  color: #ff4747;
+}
+
 .form-group{
   padding-bottom: 5px;
+  width: 100%;
 }
 
 .label {
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 400;
   padding-bottom: 5px;
 }
 
@@ -130,7 +135,7 @@
   width: 100%;
   outline: none;
   border: none;
-  border-bottom: 1px solid #c4c4c4;
+  border-bottom: 2px solid #e8e6e6;
   padding-top: 5px;
   padding-bottom: 5px;
   color: #DA0AE4;
@@ -190,6 +195,9 @@
   border-radius: 12px;
 }
 
+.page-heading p{
+  text-transform: capitalize;
+}
 
 /* compatibility result */
 .compatibility{
