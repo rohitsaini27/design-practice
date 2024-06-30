@@ -10,7 +10,7 @@ const Home = () => {
     <div className='container'>
     <div className='header'>
         <div className='icon'>
-        <span><img src={leftarrow}/></span>
+        <span><img src={leftarrow} alt='leftarrow'/></span>
         </div>
         <p>Compatibility Check</p>
         <Avatar src={avatarImg} alt='avatar'/>

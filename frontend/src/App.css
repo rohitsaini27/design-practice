@@ -270,7 +270,7 @@
 .compatibility .progress {
   height: 100%;
   border-radius: 5px;
-  transition: width 0.3s ease-in-out;
+  transition: width 1s ease-in-out;
 }
 
 .compatibility .text {
