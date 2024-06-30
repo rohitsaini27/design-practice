@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Progress from "./shared/progress";
 import Navbar from "./navbar";
+import MainProgress from "./shared/mainprogress";
+import axios from "axios";
 
 const CompatibilityResult = () => {
-  const formdata = JSON.parse(localStorage.getItem('formdata')) || {};
-
+  const data = JSON.parse(localStorage.getItem('formdata')) || {};
+  const [formdata, setFormData] = useState({})
+  const [percent, setPercent] = useState(0)
   const [scorePercentage, setScorePercentage] = useState(0);
+
+  useEffect(() => {
+    if(data?._id){
+      axios.get(`${process.env.REACT_APP_URL}/form?id=${data?._id}`).then((response) => {
+        setFormData(response.data)
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
+  },[data?._id])
 
   // Calculate average value
   function averageValue() {
@@ -23,27 +36,31 @@ const CompatibilityResult = () => {
 
   // Animate score percentage
   useEffect(() => {
-    const targetPercentage = parseFloat(averageValue());
-    if (!isNaN(targetPercentage)) {
-      let currentPercentage = 0;
-      const increment = targetPercentage / 100; // Adjust increment speed
-      const animationDuration = 1000; // Animation duration in milliseconds
-
-      const timer = setInterval(() => {
-        currentPercentage += increment;
-        if (currentPercentage >= targetPercentage) {
-          clearInterval(timer);
-          setScorePercentage(targetPercentage);
-        } else {
-          setScorePercentage(currentPercentage);
-        }
-      }, animationDuration / 100); // Divide duration by 100 for smoother animation
-    }
+    const interval = setInterval(() => {
+      setScorePercentage((prev) => {
+        const newScore = prev + 1;
+        const targetScore = parseFloat(averageValue());
+        return newScore <= targetScore ? newScore : targetScore; 
+      });
+    }, 40);
+    return () => clearInterval(interval);
     // eslint-disable-next-line 
-  }, []);
+  }, [formdata]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPercent((prevPercent) => {
+        const newPercent = prevPercent + 1;
+        return newPercent <= averageValue() ? newPercent : prevPercent;
+      });
+    }, 20);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line 
+  }, [formdata]);
 
   return (
     <div className="compatibility">
+      <MainProgress percent={percent} background={'#FF572E'} />
       <span>{result()}</span>
       <div className="score">
         <p>{scorePercentage.toFixed(2)}%</p>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Label from "./shared/label";
 import { useNavigate } from "react-router-dom";
 import TextInput from "./shared/textinput";
+import axios from 'axios';
 
 const FormInput = () => {
   const navigate = useNavigate();
@@ -16,47 +17,48 @@ const FormInput = () => {
   const [error, setError] = useState("");
 
   function handleSubmit() {
-    if (
-      !formdata.name ||
-      !formdata.number ||
-      !formdata.area ||
-      !formdata.city ||
-      !formdata.description
-    ) {
-      setError("Feild must not be empty");
-    }else if(formdata.number > 100 || formdata.city > 100 || formdata.area > 100){
-      setError("Feild must not be greater than 100");
-    }else{
-      localStorage.setItem("formdata",JSON.stringify(formdata))
-      navigate("/compatibility");
-      setFormData({
-        name: "",
-        number: "",
-        area: "",
-        city: "",
-        description: "",
-      });
+    if (!formdata.name || !formdata.number || !formdata.area || !formdata.city || !formdata.description) {
+      setError("Fields must not be empty");
+    } else if (parseInt(formdata.number) > 100 || parseInt(formdata.city) > 100 || parseInt(formdata.area) > 100) {
+      setError("Fields must not be greater than 100");
+    } else {
+      axios.post(`${process.env.REACT_APP_URL}/form`, formdata)
+        .then((response) => {
+          console.log(response.data);
+          localStorage.setItem("formdata", JSON.stringify(response.data));
+          navigate("/compatibility");
+          setFormData({
+            name: "",
+            number: "",
+            area: "",
+            city: "",
+            description: "",
+          });
+        })
+        .catch((error) => {
+          console.error("Error submitting form:", error);
+          setError("Failed to submit form. Please try again later.");
+        });
     }
   }
 
-  function nameHandler(e) {
+  function handleChange(e) {
     const { name, value } = e.target;
-    const cleanValue = value.replace(/[^A-Za-z\s]/g, "");
-    setFormData((prev) => ({
-      ...prev,
-      [name]: cleanValue,
-    }));
-    setError("")
-  }
+    let cleanValue = value;
 
-  function numberHanlder(e) {
-    const { name, value } = e.target;
-    const cleanValue = value.replace(/\D/g, "");
+    // Validate and sanitize input based on field
+    if (name === "name" || name === "description") {
+      cleanValue = value.replace(/[^A-Za-z\s]/g, "");
+    } else if (name === "number" || name === "area" || name === "city") {
+      cleanValue = value.replace(/\D/g, "");
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: cleanValue,
     }));
-    setError("")
+
+    setError(""); // Clear error on input change
   }
 
   return (
@@ -70,7 +72,7 @@ const FormInput = () => {
             placeholder="John Doe"
             name="name"
             value={formdata.name}
-            onChange={nameHandler}
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -79,7 +81,7 @@ const FormInput = () => {
             placeholder="12"
             name="number"
             value={formdata.number}
-            onChange={numberHanlder}
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -88,7 +90,7 @@ const FormInput = () => {
             placeholder="12"
             name="area"
             value={formdata.area}
-            onChange={numberHanlder}
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -97,7 +99,7 @@ const FormInput = () => {
             placeholder="12"
             name="city"
             value={formdata.city}
-            onChange={numberHanlder}
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -106,7 +108,7 @@ const FormInput = () => {
             placeholder="This is where..."
             name="description"
             value={formdata.description}
-            onChange={nameHandler}
+            onChange={handleChange}
           />
         </div>
       </div>

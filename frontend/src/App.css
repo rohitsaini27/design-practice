@@ -225,13 +225,14 @@
   border-radius: 10px;
 }
 
-.compatibility .score{
+.compatibility .score {
   display: flex;
   width: 100%;
-  font-size: 42px;
+  font-size: 38px;
   color: #EF3C25;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
+  margin-top: -15px;
 }
 
 .compatibility .compatibility-progress {
@@ -298,3 +299,17 @@
   line-height: 1.5; 
 } 
 
+.mainprogress{
+  width: 100%;
+  height: 23px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.mainprogress-bar{
+  height: 100%;
+  border-radius: 15px;
+  transition: width 0.3s ease-in-out;
+}
