@@ -1,28 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Progress from "./shared/progress";
 import Navbar from "./navbar";
 
 const CompatibilityResult = () => {
-  const formdata = JSON.parse(localStorage.getItem('formdata')) || {}
+  const formdata = JSON.parse(localStorage.getItem('formdata')) || {};
 
-  function averageValue(){
-    if(formdata.number && formdata.city && formdata.area){
-      let average = (parseInt(formdata.number) + parseInt(formdata.city) + parseInt(formdata.area)) / 3
-      return average.toFixed(2)
+  const [scorePercentage, setScorePercentage] = useState(0);
+
+  // Calculate average value
+  function averageValue() {
+    if (formdata.number && formdata.city && formdata.area) {
+      let average = (parseInt(formdata.number) + parseInt(formdata.city) + parseInt(formdata.area)) / 3;
+      return average.toFixed(2);
     }
   }
 
-  function result(){
-    const avg = parseFloat(averageValue())
-    return avg <= 33 ? 'Bad' : avg <= 66 ? 'Average' : 'Good'
+  // Determine result category based on average value
+  function result() {
+    const avg = parseFloat(averageValue());
+    return avg <= 33 ? 'Bad' : avg <= 66 ? 'Average' : 'Good';
   }
+
+  // Animate score percentage
+  useEffect(() => {
+    const targetPercentage = parseFloat(averageValue());
+    if (!isNaN(targetPercentage)) {
+      let currentPercentage = 0;
+      const increment = targetPercentage / 100; // Adjust increment speed
+      const animationDuration = 1000; // Animation duration in milliseconds
+
+      const timer = setInterval(() => {
+        currentPercentage += increment;
+        if (currentPercentage >= targetPercentage) {
+          clearInterval(timer);
+          setScorePercentage(targetPercentage);
+        } else {
+          setScorePercentage(currentPercentage);
+        }
+      }, animationDuration / 100); // Divide duration by 100 for smoother animation
+    }
+    // eslint-disable-next-line 
+  }, []);
 
   return (
     <div className="compatibility">
       <span>{result()}</span>
       <div className="score">
-        <p>{averageValue()}%</p>
-        <pp>SCORE</pp>
+        <p>{scorePercentage.toFixed(2)}%</p>
+        <p>SCORE</p>
       </div>
       <div className="compatibility-progress">
         <Progress
@@ -49,9 +74,9 @@ const CompatibilityResult = () => {
           doing. Don't be afraid to come forward with ideas.
         </p>
       </div>
-      <Navbar/>
+      <Navbar />
     </div>
   );
 };
 
-export default CompatibilityResult; 
+export default CompatibilityResult;
